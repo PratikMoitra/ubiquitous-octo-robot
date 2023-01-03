@@ -9,7 +9,7 @@
       - nmap
       - bpython
       - zsh
-      - terraform
+      # - terraform
       - git
       - python3
   tasks:
