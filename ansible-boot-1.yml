@@ -17,10 +17,12 @@
       apt:
         update_cache: yes
       when: ansible_os_family == "Debian"
+
     - name: Update package manager on CentOS/RHEL
       yum:
         update_cache: yes
       when: ansible_os_family == "RedHat"
+
     - name: Update package manager on macOS
       brew:
         update_homebrew: yes
@@ -30,7 +32,7 @@
       package:
         name: "{{ zerotier_cli_pkg }}"
         state: present
-
+        
     - name: Join Zerotier network
       shell: zerotier-cli join {{ network_id }}
       register: join_output
