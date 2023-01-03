@@ -1,0 +1,24 @@
+---
+- name: Configure pfSense firewall
+  hosts: pfsense
+  become: true
+  vars_files:
+    - firewall_policy.yml
+  tasks:
+  - name: Add firewall rules
+    pfsense_rule:
+      state: present
+      interface: "{{ item.interface }}"
+      protocol: "{{ item.protocol }}"
+      source: "{{ item.source }}"
+      destination: "{{ item.destination }}"
+      dest_port: "{{ item.dest_port }}"
+      action: "{{ item.action }}"
+    loop: "{{ firewall_policy }}"
+
+
+# Firewall_policy.yml
+firewall_policy:
+  - { interface: WAN, protocol: tcp, source: any, destination: 192.168.1.100, dest_port: 22, action: allow }
+  - { interface: WAN, protocol: tcp, source: any, destination: 192.168.1.100, dest_port: 80, action: allow }
+  - { interface: LAN, protocol: tcp, source: any, destination: 192.168.1.100, dest_port: 80, action: allow }

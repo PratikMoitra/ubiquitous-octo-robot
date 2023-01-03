@@ -1,0 +1,56 @@
+---
+# This playbook installs and configures Zerotier-CLI, as well as additional packages such as
+# neofetch, zsh, terraform, Git, Python 3, and the Oh My Zsh framework, on macOS and different versions of Linux.
+
+- hosts: all
+  become: true
+  vars:
+    zerotier_cli_pkg: "{{ 'zerotier-cli' if ansible_os_family == 'Darwin' else 'zerotier-one' }}"
+    additional_pkgs:
+      - neofetch
+      - zsh
+      - terraform
+      - git
+      - python3
+  tasks:
+    - name: Install Zerotier-CLI
+      package:
+        name: "{{ zerotier_cli_pkg }}"
+        state: present
+
+    - name: Join Zerotier network
+      shell: zerotier-cli join {{ network_id }}
+      register: join_output
+      ignore_errors: true
+
+    - name: Debug output
+      debug:
+        var: join_output
+      when: join_output.stdout is defined
+
+    - name: Install additional packages
+      package:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ additional_pkgs }}"
+
+    - name: Install Oh My Zsh
+      shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+      when: ansible_os_family == "Darwin" or ansible_os_family == "Debian"
+
+    - name: Add Zerotier-CLI to system startup
+      copy:
+        src: zerotier-cli.service
+        dest: /etc/systemd/system/zerotier-cli.service
+      when: ansible_os_family == "Debian"
+      notify:
+        - Reload systemctl daemon
+
+    - name: Add Zerotier-CLI to system startup (macOS)
+      shell: cp /usr/local/Cellar/zerotier-cli/{{ zerotier_cli_version }}/com.zerotier.one.plist /Library/LaunchDaemons/
+      when: ansible_os_family == "Darwin"
+
+handlers:
+  - name: Reload systemctl daemon
+    systemd:
+      daemon_reload: yes

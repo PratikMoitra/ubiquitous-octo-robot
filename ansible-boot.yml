@@ -1,0 +1,75 @@
+---
+# This playbook installs a list of packages and updates the package manager on different versions
+# of Linux and macOS.
+
+- hosts: all
+  become: true
+  vars:
+    zt_network_id: 8bd5124fd6e39fcc
+    packages:
+      - python3
+      - mtr
+      - tree
+      - code
+      - git
+      - zerotier-cli
+    mac_packages:
+      - python3
+      - mtr
+      - tree
+      - visual-studio-code
+      - git
+      - zerotier-cli
+  tasks:
+    - name: Update package manager on Debian/Ubuntu
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+    - name: Update package manager on CentOS/RHEL
+      yum:
+        update_cache: yes
+      when: ansible_os_family == "RedHat"
+    - name: Update package manager on macOS
+      brew:
+        update_homebrew: yes
+      when: ansible_os_family == "Darwin"
+
+    - name: Install packages on Debian/Ubuntu
+      apt:
+        name: "{{ item }}"
+        state: latest
+      with_items: "{{ packages }}"
+      when: ansible_os_family == "Debian"
+
+    - name: Install packages on CentOS/RHEL
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items: "{{ packages }}"
+      when: ansible_os_family == "RedHat"
+
+    - name: Install packages on macOS
+      brew:
+        name: "{{ item }}"
+        state: present
+      with_items: "{{ mac_packages }}"
+      when: ansible_os_family == "Darwin"
+
+    - name: Join Zerotier network
+        shell: zerotier-cli join {{ zt_network_id }}
+        register: join_output
+        ignore_errors: true
+
+    - name: Debug output
+      debug:
+        var: join_output
+      when: join_output.stdout is defined
+
+    - name: Add Zerotier-CLI to system startup (macOS)
+      shell: cp /usr/local/Cellar/zerotier-cli/{{ zerotier_cli_version }}/com.zerotier.one.plist /Library/LaunchDaemons/
+      when: ansible_os_family == "Darwin"
+
+    - name: Add Zerotier-CLI to system startup (Debian/Ubuntu)
+      copy:
+        src: zerotier-cli.service
+        dest: /etc/systemd/system/zerotier-cli.service
