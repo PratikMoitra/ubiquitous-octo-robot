@@ -42,9 +42,9 @@
       shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
       when: ansible_os_family == "Darwin" or ansible_os_family == "Debian"
 
-    - name: Add Zerotier-CLI to system startup
-      copy:
-        src: zerotier-cli
+    # - name: Add Zerotier-CLI to system startup
+    #   copy:
+    #     src: zerotier-cli
   handlers:
     - name: Reload systemctl daemon
       systemd:
