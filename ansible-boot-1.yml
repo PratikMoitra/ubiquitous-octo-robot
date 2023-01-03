@@ -1,7 +1,4 @@
 ---
-# This playbook installs and configures Zerotier-CLI, as well as additional packages such as
-# neofetch, zsh, terraform, Git, Python 3, and the Oh My Zsh framework, on macOS and different versions of Linux.
-
 - hosts: localhost
   connection: local
   vars:
@@ -10,8 +7,6 @@
       - neofetch
       - zsh
       - terraform
-      - mtr
-      - bpython
       - git
       - python3
   tasks:
@@ -42,15 +37,7 @@
 
     - name: Add Zerotier-CLI to system startup
       copy:
-        src: zerotier-cli.service
-        dest: /etc/systemd/system/zerotier-cli.service
-      when: ansible_os_family == "Debian"
-      notify:
-        - Reload systemctl daemon
-
-    - name: Add Zerotier-CLI to system startup (macOS)
-      shell: cp /usr/local/Cellar/zerotier-cli/{{ zerotier_cli_version }}/com.zerotier.one.plist /Library/LaunchDaemons/
-      when: ansible_os_family == "Darwin"
+        src: zerotier-cli
   handlers:
     - name: Reload systemctl daemon
       systemd:
