@@ -51,8 +51,7 @@
     - name: Add Zerotier-CLI to system startup (macOS)
       shell: cp /usr/local/Cellar/zerotier-cli/{{ zerotier_cli_version }}/com.zerotier.one.plist /Library/LaunchDaemons/
       when: ansible_os_family == "Darwin"
-
-handlers:
-  - name: Reload systemctl daemon
-    systemd:
-      daemon_reload: yes
+  handlers:
+    - name: Reload systemctl daemon
+      systemd:
+        daemon_reload: yes
