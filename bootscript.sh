@@ -16,5 +16,5 @@ if [ "$(uname)" == "Darwin" ]; then
     brew install ansible
 fi
 
-# Run ansible-pull command to execute an ansible script.
-ansible-pull -U https://github.com/user/ansible-repo.git playbook.yml
+# Run ansible-pull command to execute an ansible script. 
+ansible-pull -U https://github.com/PratikMoitra/ubiquitous-octo-robot.git -i localhost, ansible-boot-1.yml
