@@ -13,26 +13,15 @@
       - git
       - python3
   tasks:
-    - name: Update package manager on Debian/Ubuntu
-      apt:
+    - name: Update package manager.
+      package:
         update_cache: yes
-      when: ansible_os_family == "Debian"
-
-    - name: Update package manager on CentOS/RHEL
-      yum:
-        update_cache: yes
-      when: ansible_os_family == "RedHat"
-
-    - name: Update package manager on macOS
-      brew:
-        update_homebrew: yes
-      when: ansible_os_family == "Darwin"
 
     - name: Install Zerotier-CLI
       package:
         name: "{{ zerotier_cli_pkg }}"
         state: present
-        
+
     - name: Join Zerotier network
       shell: zerotier-cli join {{ network_id }}
       register: join_output
