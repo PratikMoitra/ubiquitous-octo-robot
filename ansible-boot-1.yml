@@ -10,6 +10,8 @@
       - neofetch
       - zsh
       - terraform
+      - mtr
+      - bpython
       - git
       - python3
   tasks:
