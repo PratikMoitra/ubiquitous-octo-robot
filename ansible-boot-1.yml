@@ -5,6 +5,9 @@
     zerotier_cli_pkg: "{{ 'zerotier-one' if ansible_os_family == 'Darwin' else 'zerotier-cli' }}"
     additional_pkgs:
       - neofetch
+      - mtr
+      - nmap
+      - bpython
       - zsh
       - terraform
       - git
