@@ -17,10 +17,10 @@
       package:
         update_cache: yes
 
-    - name: Install Zerotier-CLI
-      package:
-        name: "{{ zerotier_cli_pkg }}"
-        state: present
+    # - name: Install Zerotier-CLI
+    #   package:
+    #     name: "{{ zerotier_cli_pkg }}"
+    #     state: present
 
     - name: Join Zerotier network
       shell: zerotier-cli join {{ network_id }}
