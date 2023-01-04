@@ -40,9 +40,22 @@
       service:
         name: zerotier-one
         state: started
-        enabled: yesI
+        enabled: yes
 
-    - name: Install additional packages
+    - name: Download Terraform binary
+      unarchive:
+        src: https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip
+        dest: /usr/local/bin
+        remote_src: yes
+      vars:
+        terraform_version: 0.15.5
+
+    - name: Set executable permission on Terraform binary
+      file:
+        path: /usr/local/bin/terraform
+        mode: 0755
+
+    - name: Install additional packages # All other packages.
       package:
         name: "{{ item }}"
         state: present
