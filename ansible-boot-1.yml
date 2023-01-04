@@ -17,20 +17,37 @@
       package:
         update_cache: yes
 
-    # - name: Install Zerotier-CLI
-    #   package:
-    #     name: "{{ zerotier_cli_pkg }}"
-    #     state: present
+    - name: Install Zerotier-CLI
+      shell: curl -s https://install.zerotier.com/ | sudo bash
+      ignore_errors: true
+      register: zt_install_log
 
-    # - name: Join Zerotier network
-    #   shell: zerotier-cli join {{ network_id }}
-    #   register: join_output
-    #   ignore_errors: true
+    - name: Join Zerotier network
+      block:
+        shell: zerotier-cli join {{ network_id }}
+        register: join_output
+        ignore_errors: true
+      rescue:
+        - debug:
+            msg: "Install Zerotier-CLI failed"
+      dependencies:
+        - Install Zerotier-CLI
 
-    # - name: Debug output
-    #   debug:
-    #     var: join_output
-    #   when: join_output.stdout is defined
+    - name: Debug output
+      debug:
+        var: join_output
+      when: join_output.stdout is defined
+
+    - name: Add Zerotier-CLI to system startup
+      block: 
+        copy:
+          src: zerotier-cli
+        msg: "Zerotier-CLI added to startup"
+      rescue:
+        - debug:
+            msg: "Install Zerotier-CLI failed"
+      dependencies:
+        - Install Zerotier-CLI
 
     - name: Install additional packages
       package:
@@ -42,10 +59,11 @@
       shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
       when: ansible_os_family == "Darwin" or ansible_os_family == "Debian"
 
-    # - name: Add Zerotier-CLI to system startup
-    #   copy:
-    #     src: zerotier-cli
+
   handlers:
     - name: Reload systemctl daemon
       systemd:
         daemon_reload: yes
+
+
+
