@@ -19,21 +19,19 @@
       vars:
         package_manager_update_command: "{{ 'brew update' if ansible_os_family == 'Darwin' else 'apt-get update' }}"
 
-    - name: Install Zerotier
+    - name: "Install Zerotier"
       script: curl -s https://install.zerotier.com/ | sudo bash
-
 
     - name: Join Zerotier network
       block:
         - shell: zerotier-cli join {{ network_id }}
           register: join_output
           ignore_errors: true
-
       rescue:
         - debug:
             msg: "Install Zerotier-CLI failed"
       dependencies:
-        - Install Zerotier
+        - "Install Zerotier"
 
     - name: Debug output
       debug:
@@ -65,10 +63,19 @@
         state: present
       loop: "{{ additional_pkgs }}"
 
-    - name: Install Oh My Zsh
-      shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-      when: ansible_os_family == "Darwin" or ansible_os_family == "Debian"
+    - name: ZSH_Installation
+      package:
+        name: "zsh"
+        state: present
 
+    - name: Install Oh My Zsh
+      block:
+        - shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+      rescue:
+        - debug:
+            msg: "Installion ZSH failed"
+      dependencies:
+        - ZSH_Installation
 
   handlers:
     - name: Reload systemctl daemon
