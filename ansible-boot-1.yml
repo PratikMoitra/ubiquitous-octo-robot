@@ -23,10 +23,10 @@
 
     - name: Join Zerotier network
       block:
-        - debug:
-            shell: zerotier-cli join {{ network_id }}
-            register: join_output
-            ignore_errors: true
+        - shell: zerotier-cli join {{ network_id }}
+          register: join_output
+          ignore_errors: true
+          
       rescue:
         - debug:
             msg: "Install Zerotier-CLI failed"
