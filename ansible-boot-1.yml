@@ -22,27 +22,23 @@
     - name: "Install Zerotier"
       script: curl -s https://install.zerotier.com/ | sudo bash
 
-    # - name: Join Zerotier network
-    #   block:
-    #     - shell: zerotier-cli join {{ network_id }}
-    #       register: join_output
-    #       ignore_errors: true
-    #   rescue:
-    #     - debug:
-    #         msg: "Install Zerotier-CLI failed"
-    #   dependencies:
-    #     - "Install Zerotier"
+    - name: Join Zerotier network
+      shell: zerotier-cli join {{ network_id }}
+      register: join_output
+      ignore_errors: true
+      dependencies:
+        - "Install Zerotier"
 
-    # - name: Debug output
-    #   debug:
-    #     var: join_output
-    #   when: join_output.stdout is defined
+    - name: Debug output
+      debug:
+        var: join_output
+      when: join_output.stdout is defined
 
-    # - name: Enable and start Zerotier service
-    #   service:
-    #     name: zerotier-one
-    #     state: started
-    #     enabled: yes
+    - name: Enable and start Zerotier service
+      service:
+        name: zerotier-one
+        state: started
+        enabled: yes
 
     - name: Download Terraform binary
       unarchive:
@@ -69,11 +65,7 @@
         state: present
 
     - name: Install Oh My Zsh
-      block:
-        - shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-      rescue:
-        - debug:
-            msg: "Installion ZSH failed"
+      shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
       dependencies:
         - ZSH_Installation
 
