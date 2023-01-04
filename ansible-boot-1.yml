@@ -19,12 +19,14 @@
 
     - name: Install Zerotier
       script: curl -s https://install.zerotier.com/ | sudo bash
+      become: yes
 
     - name: Join Zerotier network
       block:
-        - shell: zerotier-cli join {{ network_id }}
-          register: join_output
-          ignore_errors: true
+        - debug:
+            shell: zerotier-cli join {{ network_id }}
+            register: join_output
+            ignore_errors: true
       rescue:
         - debug:
             msg: "Install Zerotier-CLI failed"
