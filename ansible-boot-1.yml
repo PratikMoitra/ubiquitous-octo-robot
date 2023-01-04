@@ -33,16 +33,16 @@
       dependencies:
         - "Install Zerotier"
 
-    - name: Debug output
-      debug:
-        var: join_output
-      when: join_output.stdout is defined
+    # - name: Debug output
+    #   debug:
+    #     var: join_output
+    #   when: join_output.stdout is defined
 
-    - name: Enable and start Zerotier service
-      service:
-        name: zerotier-one
-        state: started
-        enabled: yes
+    # - name: Enable and start Zerotier service
+    #   service:
+    #     name: zerotier-one
+    #     state: started
+    #     enabled: yes
 
     - name: Download Terraform binary
       unarchive:
