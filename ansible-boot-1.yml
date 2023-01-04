@@ -20,8 +20,8 @@
       vars:
         package_manager_update_command: "{{ 'brew update' if ansible_os_family == 'Darwin' else 'apt-get update' }}"
 
-    # - name: "Install Zerotier"
-    #   ansible.builtin.script: curl -s https://install.zerotier.com/ | sudo bash
+    - name: "Install Zerotier"
+      ansible.builtin.script: curl -s https://install.zerotier.com/ | sudo bash
 
     # - name: Join Zerotier network
     #   ansible.builtin.shell: zerotier-cli join {{ zt_network_id }}
@@ -65,10 +65,10 @@
         name: "zsh"
         state: present
 
-    # - name: Install Oh My Zsh
-    #   ansible.builtin.shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-    #   dependencies:
-    #     - ZSH_Installation
+    - name: Install Oh My Zsh
+      ansible.builtin.shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+      dependencies:
+        - ZSH_Installation
 
   handlers:
     - name: Reload systemctl daemon
