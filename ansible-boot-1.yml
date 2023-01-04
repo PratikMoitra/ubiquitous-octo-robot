@@ -61,14 +61,14 @@
       loop: "{{ additional_pkgs }}"
 
     - name: ZSH_Installation
-      package:
-        name: "zsh"
-        state: present
+      ansible.builtin.script: curl https://raw.githubusercontent.com/viasite-ansible/ansible-role-zsh/master/install.sh | bash
+        # name: "zsh"
+        # state: present
 
     - name: Install Oh My Zsh
-      ansible.builtin.shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-      dependencies:
-        - ZSH_Installation
+      ansible.builtin.script: curl https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | bash
+      # dependencies:
+      #   - ZSH_Installation
 
   handlers:
     - name: Reload systemctl daemon
