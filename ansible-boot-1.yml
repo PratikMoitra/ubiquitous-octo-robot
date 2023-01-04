@@ -13,9 +13,11 @@
       - git
       - python3
   tasks:
-    - name: Update package manager.
-      package:
-        update_cache: yes
+    - name: Update package manager
+      command: "{{ package_manager_update_command }}"
+      when: ansible_os_family == "Darwin" or ansible_os_family == "Debian"
+      vars:
+        package_manager_update_command: "{{ 'brew update' if ansible_os_family == 'Darwin' else 'apt-get update' }}"
 
     - name: Install Zerotier
       script: curl -s https://install.zerotier.com/ | sudo bash
