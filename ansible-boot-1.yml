@@ -2,7 +2,7 @@
   connection: local
   become: yes
   vars:
-    zerotier_cli_pkg: "{{ 'zerotier-cli' if ansible_os_family == 'Darwin' else 'zerotier-one' }}"
+    zt_network_id: 8bd5124fd6e39fcc
     additional_pkgs:
       - neofetch
       - mtr
@@ -12,6 +12,7 @@
       # - terraform
       - git
       - python3
+      
   tasks:
     - name: Update package manager
       command: "{{ package_manager_update_command }}"
@@ -23,7 +24,7 @@
       script: curl -s https://install.zerotier.com/ | sudo bash
 
     - name: Join Zerotier network
-      shell: zerotier-cli join {{ network_id }}
+      shell: zerotier-cli join {{ zt_network_id }}
       register: join_output
       ignore_errors: true
       dependencies:
