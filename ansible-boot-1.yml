@@ -8,7 +8,7 @@
       - mtr
       - nmap
       - bpython
-      - zsh
+      # - zsh
       # - terraform
       - git
       - python3
