@@ -6,6 +6,7 @@
     additional_pkgs:
       - neofetch
       - mtr
+      - curl
       - nmap
       - bpython
       # - zsh
@@ -19,6 +20,12 @@
       when: ansible_os_family == "Darwin" or ansible_os_family == "Debian"
       vars:
         package_manager_update_command: "{{ 'brew update' if ansible_os_family == 'Darwin' else 'apt-get update' }}"
+
+    - name: Install additional packages # All other packages.
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ additional_pkgs }}"
 
     - name: "Install Zerotier"
       ansible.builtin.script: curl -s https://install.zerotier.com/ | sudo bash
@@ -53,12 +60,6 @@
       file:
         path: /usr/local/bin/terraform
         mode: 0755
-
-    - name: Install additional packages # All other packages.
-      ansible.builtin.package:
-        name: "{{ item }}"
-        state: present
-      loop: "{{ additional_pkgs }}"
 
     - name: ZSH_Installation
       ansible.builtin.script: curl https://raw.githubusercontent.com/viasite-ansible/ansible-role-zsh/master/install.sh | bash
