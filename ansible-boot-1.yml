@@ -23,15 +23,15 @@
       register: zt_install_log
 
     - name: Join Zerotier network
-      block:
-        shell: zerotier-cli join {{ network_id }}
-        register: join_output
-        ignore_errors: true
-      rescue:
-        - debug:
-            msg: "Install Zerotier-CLI failed"
-      dependencies:
-        - Install Zerotier-CLI
+        block:
+          shell: zerotier-cli join {{ network_id }}
+          register: join_output
+          ignore_errors: true
+        rescue:
+          - debug:
+              msg: "Install Zerotier-CLI failed"
+        dependencies:
+          - Install Zerotier-CLI
 
     - name: Debug output
       debug:
@@ -39,15 +39,15 @@
       when: join_output.stdout is defined
 
     - name: Add Zerotier-CLI to system startup
-      block: 
-        copy:
-          src: zerotier-cli
-        msg: "Zerotier-CLI added to startup"
-      rescue:
-        - debug:
-            msg: "Install Zerotier-CLI failed"
-      dependencies:
-        - Install Zerotier-CLI
+        block: 
+          copy:
+            src: zerotier-cli
+          msg: "Zerotier-CLI added to startup"
+        rescue:
+          - debug:
+              msg: "Install Zerotier-CLI failed"
+        dependencies:
+          - Install Zerotier-CLI
 
     - name: Install additional packages
       package:
