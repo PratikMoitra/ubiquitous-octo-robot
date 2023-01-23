@@ -17,4 +17,4 @@ if [ "$(uname)" == "Darwin" ]; then
 fi
 
 # Run ansible-pull command to execute an ansible script. 
-sudo ansible-pull -U https://github.com/PratikMoitra/ubiquitous-octo-robot.git ansible-boot-1.yml
+sudo ansible-pull -U https://github.com/PratikMoitra/ubiquitous-octo-robot.git playbook/ansible-boot-1.yml
